@@ -8,6 +8,9 @@ var Spotify = require("node-spotify-api");
 var client = new Twitter(keys.twitter);
 var spotify = new Spotify(keys.spotify)
 
+//for pretty json - to alter the appearance of the terminal
+var prettyjson = require("prettyjson");
+
 //variable for multiple word movie or song title inputs
 var nodeArgs = process.argv;
 //variable for the first param - command
@@ -101,7 +104,16 @@ function displayTweets(){
 
       request(queryURL, function(err, res, body) {
         if(!err && res.statusCode === 200) {
-            console.log(JSON.parse(body));
+            //prettyjson test
+            var data = {
+                year: JSON.parse(body).Year,
+                title: JSON.parse(body).Title
+            }
+            console.log(prettyjson.render(data, {
+                keysColor: 'green',
+                dashColor: 'magenta',
+                stringColor: 'white'
+              }));
         }
       });
   }
