@@ -1,4 +1,6 @@
 //Liri bot for command line - made with node js
+
+//configure the .env file with api keys and secrets
 require("dotenv").config();
 
 var keys = require("./keys");
@@ -11,20 +13,19 @@ var spotify = new Spotify(keys.spotify)
 //for pretty json - to alter the appearance of the terminal
 var prettyjson = require("prettyjson");
 
-//variable for multiple word movie or song title inputs
+//empty variable for multiple word movie or song title inputs
 var nodeArgs = process.argv;
 //variable for the first param - command
 var command = process.argv[2];
-// Create an empty variable for holding the title param
+// Create an empty variable for holding the nodeArgs params
 var title = "";
 //for loop to chain together multiple word inputs and store them in the title variable
 for (var i = 3; i < nodeArgs.length; i++) {
-  if (i > 3 && i < nodeArgs.length) {
-    title = title + " " + nodeArgs[i];
-  }
-  else {
-    title += nodeArgs[i];
-  }
+    if (i > 3 && i < nodeArgs.length) {
+            title = title + " " + nodeArgs[i];
+    } else {
+            title += nodeArgs[i];
+    }
 };
 
 console.log(title);
@@ -61,42 +62,55 @@ switch(command) {
     console.log("my-tweets, spotify-this-song, movie-this, do-what-it-says");
 }
 
-function displayTweets(){
-    //Display last 20 Tweets
+function displayTweets() { 
     var screenName = {screen_name: 'nikoale96003558'};
-    client.get('statuses/user_timeline', screenName, function(error, tweets, response){
-      if(!error){
-        for(var i = 0; i < tweets.length; i++){
-          var date = tweets[i].created_at;
-          console.log("\nnikoalexander: " + tweets[i].text + " Created At: " + date.substring(0, 19));
-          console.log("=======*=======*=======*=====*====")
-        }
-      }else{
-        console.log('An error occurred');
-      }
-    });
-  }
+        client.get('statuses/user_timeline', screenName, function(error, tweets, response){
+            if(!error){
 
-  function spotifySong(song){
-    spotify.search({ type: 'track', query: song}, function(error, data){
-      if(!error){
-        for(var i = 0; i < data.tracks.items.length; i++){
-          var songData = data.tracks.items[i];
-          //artist
-          console.log("Artist: " + songData.artists[0].name);
-          //song name
-          console.log("Song: " + songData.name);
-          //spotify preview link
-          console.log("Preview URL: " + songData.preview_url);
-          //album name
-          console.log("Album: " + songData.album.name);
-          console.log("-----------------------");
-        }
-      } else{
-        console.log('An error occurred.');
-      }
+            console.log("===============================")
+            console.log("recent tweets by: nikoalexander")
+            console.log("===============================\n")
+
+            for(var i = 0; i < tweets.length; i++) {
+                var date = tweets[i].created_at;
+                var data = {
+                    tweet: tweets[i].text,
+                    written: date.substring(0, 16)
+                }
+                    console.log(prettyjson.render(data, {
+                        keysColor: 'green',
+                        dashColor: 'magenta',
+                        stringColor: 'white'
+                    }));
+                    console.log("\n")    
+            }
+            console.log("===============================")
+        } else {
+            console.log('An error occurred');
+        } 
     });
-  }
+}
+
+function spotifySong(song){
+    spotify.search({ type: 'track', query: song}, function(error, data){
+        if(!error){
+            for(var i = 0; i < data.tracks.items.length; i++){
+            var songData = data.tracks.items[i];
+            //artist
+            console.log("Artist: " + songData.artists[0].name);
+            //song name
+            console.log("Song: " + songData.name);
+            //spotify preview link
+            console.log("Preview URL: " + songData.preview_url);
+            //album name
+            console.log("Album: " + songData.album.name);
+            console.log("-----------------------");
+            }
+        } else {
+            console.log('An error occurred.');
+        }
+    });
+}
 
   function searchMovie(movieTitle) {
 
