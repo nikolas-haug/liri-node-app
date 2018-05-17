@@ -28,7 +28,7 @@ for (var i = 3; i < nodeArgs.length; i++) {
     }
 };
 
-console.log(title);
+// console.log(title);
 
 //create a switch statement to call the different functions depending on the input params
 switch(command) {
@@ -91,19 +91,24 @@ function displayTweets() {
     });
 }
 
-function spotifySong(song){
-    spotify.search({ type: 'track', query: song}, function(error, data){
+function spotifySong(song) {
+    spotify.search({ type: 'track', query: song}, function(error, data) {
         if(!error){
+            console.log("\n---------------------------------")
             for(var i = 0; i < data.tracks.items.length; i++){
             var songData = data.tracks.items[i];
-            //artist
-            console.log("Artist: " + songData.artists[0].name);
-            //song name
-            console.log("Song: " + songData.name);
-            //spotify preview link
-            console.log("Preview URL: " + songData.preview_url);
-            //album name
-            console.log("Album: " + songData.album.name);
+            //make a song data object for various categories
+            var songObject = {
+                artist: songData.artists[0].name,
+                song: songData.name,
+                URL: songData.preview_url,
+                album: songData.album.name
+            }
+            console.log(prettyjson.render(songObject, {
+                keysColor: 'green',
+                dashColor: 'magenta',
+                stringColor: 'white'
+            }));
             console.log("-----------------------");
             }
         } else {
