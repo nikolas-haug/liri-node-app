@@ -8,8 +8,8 @@ var request = require("request");
 var Twitter = require("twitter");
 var Spotify = require("node-spotify-api");
 var client = new Twitter(keys.twitter);
-var spotify = new Spotify(keys.spotify)
-
+var spotify = new Spotify(keys.spotify);
+var fs = require("fs");
 //for pretty json - to alter the appearance of the terminal
 var prettyjson = require("prettyjson");
 
@@ -58,8 +58,10 @@ switch(command) {
     break;
     //default situation with no input
     default:
-    console.log("Enter one of the following commands:");
-    console.log("my-tweets, spotify-this-song, movie-this, do-what-it-says");
+    console.log("\n===========================================================");
+    console.log("Enter one of the following commands for liri:");
+    console.log("*my-tweets  *spotify-this-song  *movie-this  *do-what-it-says");
+    console.log("===========================================================\n")
 }
 
 function displayTweets() { 
@@ -94,7 +96,9 @@ function displayTweets() {
 function spotifySong(song) {
     spotify.search({ type: 'track', query: song}, function(error, data) {
         if(!error){
-            console.log("\n---------------------------------")
+            console.log("\n---------------------------------");
+            console.log("          SEARCH RESULTS           ");
+            console.log("---------------------------------")
             for(var i = 0; i < data.tracks.items.length; i++){
             var songData = data.tracks.items[i];
             //make a song data object for various categories
@@ -118,21 +122,38 @@ function spotifySong(song) {
 }
 
   function searchMovie(movieTitle) {
+    //omdb query url with api key
+    var queryURL = "http://www.omdbapi.com?apikey=3b8b5dd8&t=" + movieTitle
 
-      var queryURL = "http://www.omdbapi.com?apikey=3b8b5dd8&t=" + movieTitle //omdb query url with api key
-
-      request(queryURL, function(err, res, body) {
+    request(queryURL, function(err, res, body) {
         if(!err && res.statusCode === 200) {
-            //prettyjson test
+            //prettyjson
             var data = {
+                title: JSON.parse(body).Title,
                 year: JSON.parse(body).Year,
-                title: JSON.parse(body).Title
+                IMDB: JSON.parse(body).Ratings[0].Value,
+                "rotten tomatoes": JSON.parse(body).Ratings[1].Value,
+                "filmed in": JSON.parse(body).Country,
+                language: JSON.parse(body).Language,
+                plot: JSON.parse(body).Plot,
+                actors: JSON.parse(body).Actors
             }
+            console.log("\n===================================================")
+            console.log("                " + JSON.parse(body).Title)
+            console.log("===================================================")
             console.log(prettyjson.render(data, {
                 keysColor: 'green',
                 dashColor: 'magenta',
                 stringColor: 'white'
-              }));
-        }
+                }));
+            console.log("=====================================================\n")
+            }
       });
+  }
+
+  function doThis() {
+    fs.readFile('random.txt', "utf8", function(error, data) {
+      var txt = data.split(',');
+      spotifySong(txt[1]);
+    });
   }
