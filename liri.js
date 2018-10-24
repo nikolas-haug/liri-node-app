@@ -18,15 +18,17 @@ var nodeArgs = process.argv;
 //variable for the first param - command
 var command = process.argv[2];
 // Create an empty variable for holding the nodeArgs params
-var title = "";
-//for loop to chain together multiple word inputs and store them in the title variable
-for (var i = 3; i < nodeArgs.length; i++) {
-    if (i > 3 && i < nodeArgs.length) {
-            title = title + " " + nodeArgs[i];
-    } else {
-            title += nodeArgs[i];
-    }
-};
+// var title = "";
+// for loop to chain together multiple word inputs and store them in the title variable
+// for (var i = 3; i < nodeArgs.length; i++) {
+//     if (i > 3 && i < nodeArgs.length) {
+//             title = title + " " + nodeArgs[i];
+//     } else {
+//             title += nodeArgs[i];
+//     }
+// };
+
+var title = process.argv.slice(3).join(' ');
 
 // console.log(title);
 
@@ -62,6 +64,7 @@ switch(command) {
     console.log("Enter one of the following commands for liri:");
     console.log("*my-tweets  *spotify-this-song  *movie-this  *do-what-it-says");
     console.log("===========================================================\n")
+
 }
 
 function displayTweets() { 
